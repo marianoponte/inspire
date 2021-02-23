@@ -1,0 +1,53 @@
+#navigation-bar {
+  font-size: 1rem;
+}
+
+table {
+  font-size: 0.85rem !important;
+}
+
+.buttons-line {
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.btn-add {
+  margin-right: 25px;
+}
+
+.form-search {
+  margin-left: 25px;
+  box-sizing: border-box;
+}
+
+#btnEditMember {
+  margin-left: 20%;
+}
+
+#btnDeleteMember {
+  margin-left: 7%;
+}
+
+#input-search-member {
+  margin-right: 0px;
+}
+
+#btn-search-member {
+  float: left;
+  margin-left: 0%;
+  box-sizing: border-box;
+}
+
+.spinner-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+  background-color: #008cba;
+}
+
+/* Buscador 
+-------------------------------------------------- */

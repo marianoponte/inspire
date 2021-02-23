@@ -1,2 +1,4 @@
-build
-node_modules
+inspire-frontend/build
+inspire-frontend/node_modules
+inspire-backend/database.db
+inspire-backend/migrations
