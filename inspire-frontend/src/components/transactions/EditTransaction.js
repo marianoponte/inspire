@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import { useHistory, useParams } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
+import CODIGO_HTTP from '../../utils/Utils'
 
 const EditTransaction = () => {
 
@@ -20,23 +22,60 @@ const EditTransaction = () => {
     useEffect(() => {
         if (!localStorage.getItem('token')) {
             return history.push('/login');
-        } else loadTransaction();
+        } else {
+            var token = localStorage.getItem('token')
+            var memberLogged = jwt_decode(token);
+            if (memberLogged.permiso == "Admin") {
+                loadTransactionAdmin();
+            } else {
+                loadTransactionUser(memberLogged.id);
+            }
+        }
     }, []);
 
-    const loadTransaction = async () => {
+    const loadTransactionAdmin = async () => {
         let response = await fetch(`http://localhost:5000/transactions/${txtId}`, {
             method: "GET",
         });
         response = await response.json();
 
-        setTransaction(response.transaccion);
+        if (response.code == CODIGO_HTTP.OK) {
+            setTransaction(response.transaccion);
+        } else {
+            return history.push("/NotFound")
+        }
         if (response.transaccion.miembro)
             setMiembro(response.transaccion.miembro)
-        else 
+        else
             setMiembro(null)
         if (response.transaccion.producto)
             setProducto(response.transaccion.producto)
-        else 
+        else
+            setProducto(null)
+        setLoading(false)
+    }
+
+    const loadTransactionUser = async (id_miembro) => {
+        let response = await fetch(`http://localhost:5000/transactions/${txtId}`, {
+            method: "GET",
+        });
+        response = await response.json();
+        if (response.code == CODIGO_HTTP.OK) {
+            setTransaction(response.transaccion);
+        } else {
+            return history.push("/NotFound")
+        }
+        if (response.transaccion.miembro)
+            if (response.transaccion.miembro.id != id_miembro) {
+                history.push("/NotFound")
+            }
+            else setMiembro(response.transaccion.miembro)
+        else
+            setMiembro(null)
+
+        if (response.transaccion.producto)
+            setProducto(response.transaccion.producto)
+        else
             setProducto(null)
         setLoading(false)
     }
@@ -58,11 +97,11 @@ const EditTransaction = () => {
                     </FormGroup>
                     <FormGroup>
                         <Label for="txtIdMember">Id Miembro</Label>
-                        <Input type="integer" id="txtIdMember" name={miembro.id} placeholder="Miembro de transacción" value={miembro ? miembro.id : null} readOnly />
+                        <Input type="integer" id="txtIdMember" name="id_miembro" placeholder="Miembro de transacción" value={miembro ? miembro.id : null} readOnly />
                     </FormGroup>
                     <FormGroup>
                         <Label for="txtIdProduct">Id Producto</Label>
-                        <Input type="integer" id="txtIdProduct" name={miembro.id} placeholder="Producto de transacción" value={producto ? producto.id : null} readOnly />
+                        <Input type="integer" id="txtIdProduct" name="id_producto" placeholder="Producto de transacción" value={producto ? producto.id : null} readOnly />
                     </FormGroup>
                     <FormGroup>
                         <Label for="txtAmount">Monto</Label>

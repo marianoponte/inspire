@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import { useHistory, useParams } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
+import CODIGO_HTTP from '../../utils/Utils'
 
 const EditVoucher = () => {
 
@@ -16,34 +18,72 @@ const EditVoucher = () => {
 
     const [loading, setLoading] = useState(true);
 
-
     useEffect(() => {
         if (!localStorage.getItem('token')) {
             return history.push('/login');
-        } else loadVouchers();
+        } else {
+                var token = localStorage.getItem('token')
+                var memberLogged = jwt_decode(token);
+                if (memberLogged.permiso == "Admin") {
+                    loadVoucherAdmin();
+                } else {
+                    loadVoucherUser(memberLogged.id);
+                }
+        }
     }, []);
 
-    const loadVouchers = async () => {
+    const loadVoucherAdmin = async () => {
         let response = await fetch(`http://localhost:5000/vouchers/${voucherId}`, {
             method: "GET",
         });
         response = await response.json();
 
-        setVoucher(response.voucher);
+        if (response.code == CODIGO_HTTP.OK) {
+            setVoucher(response.voucher);
+        } else {
+            return history.push("/NotFound")
+        }
+        
         if (response.voucher.miembro)
             setId_miembro(response.voucher.miembro.id)
-         else 
-        setId_miembro(null)
-        
+        else
+            setId_miembro(null)
+
         if (response.voucher.producto)
-        setId_producto(response.voucher.producto.id)
-         else 
-         setId_producto(null)
+            setId_producto(response.voucher.producto.id)
+        else
+            setId_producto(null)
+        setLoading(false)
+    }
+
+    const loadVoucherUser = async (id_miembro) => {
+        let response = await fetch(`http://localhost:5000/vouchers/${voucherId}`, {
+            method: "GET",
+        });
+        response = await response.json();
+
+        if (response.code == CODIGO_HTTP.OK) {
+            setVoucher(response.voucher);
+        } else {
+            return history.push("/NotFound")
+        }
+
+        if (response.voucher.miembro)
+            if (response.voucher.miembro.id != id_miembro) {
+                history.push("/NotFound")
+            } else
+                setId_miembro(response.voucher.miembro.id)
+        else
+            setId_miembro(null)
+
+        if (response.voucher.producto)
+            setId_producto(response.voucher.producto.id)
+        else
+            setId_producto(null)
         setLoading(false)
     }
 
     const { id, fecha_de_creacion, estado, fecha_de_vencimiento } = voucher;
-
 
     const onCancel = () => {
         return history.push('/vouchers')

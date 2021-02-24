@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, Spinner } from 'reactstrap';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import classnames from 'classnames';
 import MemberTransactions from './MemberTransactions';
 import swal from 'sweetalert';
@@ -10,6 +10,8 @@ import MemberVouchers from './MemberVouchers';
 import jwt_decode from 'jwt-decode';
 
 const EditMember = () => {
+
+    let history = useHistory();
 
     const { memberId } = useParams();
 
@@ -26,7 +28,17 @@ const EditMember = () => {
     }
 
     useEffect(() => {
-        loadMember();
+        if (!localStorage.getItem('token')) {
+            return history.push('/login');
+        } else {
+                var token = localStorage.getItem('token')
+                var memberLogged = jwt_decode(token);
+                if (memberLogged.permiso == "Admin") {
+                    loadMember();
+                } else {
+                    history.push("/NotFound")
+                }
+        }
     }, []);
 
     const loadMember = async () => {
@@ -51,7 +63,6 @@ const EditMember = () => {
     }
 
     const onSave = async () => {
-        const isNotEmailDuplicate = await checkEmail()
             console.log(JSON.stringify(member))
             let response = await fetch(`http://localhost:5000/members/${member.id}`, {
                 method: "PUT",
@@ -76,29 +87,6 @@ const EditMember = () => {
                 swal("Error", "No se pudieron guardar los cambios", "error")
             }
         }
-
-    const checkEmail = async () => {
-        if (localStorage.getItem('token')) {
-            var token = localStorage.getItem('token')
-            var memberToken = jwt_decode(token);
-            console.log("Member token email:", memberToken.email)
-            console.log("Member token id:", memberToken.id)
-            console.log(member.email)
-            if (memberToken.id == memberId && memberToken.email == member.email) {
-                return true
-            }
-                let response = await fetch(`http://localhost:5000/members?email=${member.email}`, {
-                    method: "GET"
-                });
-                response = await response.json();
-                console.log(response)
-                if (response.miembros.length > 0) {
-                    if (response.miembros.id == memberId) {
-                    return false
-                    }
-                } return true
-        }
-    }
 
     return (
         <Row>
@@ -157,7 +145,7 @@ const EditMember = () => {
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="memberEmail">Email</Label>
-                                    <Input type="text" id="memberEmail" name="email" placeholder="Email de cliente" value={email} onChange={e => onInputChange(e)} />
+                                    <Input type="text" id="memberEmail" name="email" placeholder="Email de cliente" value={email} onChange={e => onInputChange(e)} readOnly/>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="memberPoints">Puntos</Label>

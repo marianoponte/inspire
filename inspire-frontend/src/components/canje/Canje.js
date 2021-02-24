@@ -138,7 +138,7 @@ const Canje = (props) => {
 
     return (
         <div>
-            <Button className="btn btn-primary btn-block" onClick={toggle}>Canjear</Button>
+            <Button className="btn btn-primary btn-block" color="btn-primary" onClick={toggle}>Canjear</Button>
         </div>
     );
 };

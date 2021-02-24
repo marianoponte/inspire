@@ -5,6 +5,7 @@ const NotFound = () => {
 
     useEffect(() => {
         document.getElementById('navigation-bar').style.display = "none"; }, [])
+        
     return (
         <body class="bg-purple">
             <div class="stars">

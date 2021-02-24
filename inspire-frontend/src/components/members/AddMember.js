@@ -51,7 +51,7 @@ const AddMember = () => {
     response = await response.json();
 
     if (response.code == CODIGO_HTTP.CREATED) {
-      swal("Bien!", "Se ha creado correctamente el miembro", "success").then(() => setModal(!modal))
+      swal("Bien!", "Se ha creado correctamente el miembro", "success").then(() => { setModal(!modal); window.location.reload()})
     } else {
       swal("Error", response.mensaje , "error") 
     }

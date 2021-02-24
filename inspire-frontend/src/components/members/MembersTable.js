@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Spinner } from 'reactstrap';
 import { Link, useHistory } from "react-router-dom";
 import AddMember from './AddMember';
-import SearchMember from './SearchMember';
 import swal from 'sweetalert';
+import jwt_decode from 'jwt-decode';
 import CODIGO_HTTP from '../../utils/Utils'
 
 const MembersTable = () => {
@@ -12,12 +12,24 @@ const MembersTable = () => {
 
     const [members, setMembers] = useState([]);
 
+    const [membersOriginal, setMembersOriginal] = useState([]);
+
     const [loading, setLoading] = useState(true)
 
+    const [search, setSearch] = useState('')
+    
     useEffect(() => {
         if (!localStorage.getItem('token')) {
             return history.push('/login');
-        } else getMembers();
+        } else {
+            var token = localStorage.getItem('token')
+            var memberLogged = jwt_decode(token);
+            if (memberLogged.permiso == "Admin") {
+                getMembers();
+            } else {
+                history.push("/NotFound")
+            }
+        }
     }, []);
 
     const getMembers = async () => {
@@ -28,7 +40,8 @@ const MembersTable = () => {
         response = await response.json();
         console.log("Response: ", response);
         setMembers(response.miembros);
-        setLoading(false)
+        setMembersOriginal(response.miembros);
+        setLoading(false);
     }
 
     const deleteMember = (memberId) => {
@@ -56,12 +69,34 @@ const MembersTable = () => {
             })
     }
 
+    const onInputChange = async e => {
+        await setSearch(e.target.value)
+        console.log(search)
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault()
+        searchMembers()
+    }
+
+    const searchMembers = () => {
+        var members = membersOriginal
+        var filteredMembers = members.filter(item => {
+            if (item.nombre.toString().toLowerCase().includes(search.toLowerCase()) || item.apellido.toString().toLowerCase().includes(search.toLowerCase()))
+            return item;
+        })
+        setMembers(filteredMembers);
+    }
+    
     return (
         <div>
             { (!loading) ?
                 <div>
                     <div className="buttons-line d-flex justify-content-between align-items-center">
-                        <SearchMember />
+                        <form className="form-inline my-2 my-lg-0 form-search" onSubmit={handleSubmit}>
+                            <input className="form-control mr-sm-1" id="input-search-member" type="text" placeholder="Nombre o apellido..." name="search" value={search} onChange={onInputChange} />
+                            <button className="btn btn-secondary my-2 my-sm-0" id="btn-search-member" type="submit">Buscar</button>
+                        </form>
                         <AddMember />
                     </div>
                     <Table>

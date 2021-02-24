@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import { useHistory } from "react-router-dom";
 import CODIGO_HTTP from '../../utils/Utils';
 import swal from 'sweetalert';
@@ -9,12 +9,15 @@ const AddTransaction = () => {
     let history = useHistory();
 
     const [members, setMembers] = useState([])
+
+    const [products, setProducts] = useState([])
   
     useEffect(() => {
       if (!localStorage.getItem('token')) {
         return history.push('/login'); }
     else {
         getMembers();
+        getProducts();
         console.log("Miembros: ", members)
         } }, [])
   
@@ -47,22 +50,48 @@ const AddTransaction = () => {
         console.log("Response: ", response);
         setMembers(response.miembros);
     }
+
+    const getProducts = async () => {
+        let response = await fetch('http://localhost:5000/products', {
+            method: "GET"
+        });
+        response = await response.json();
+        console.log("Response: ", response);
+        setProducts(response.productos);
+    }
   
     const toggle = () => {
         cleanForm();
         setModal(!modal);
     }
-  
-    const onSubmit = async () => {
-        if (!tipo) {
-            return swal("Error", "Se tiene que completar el campo tipo!", "error")
-        }
+    
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const fieldsOk = await checkFieldsRequireds()
+        if (fieldsOk) {
         generateTransaction().then(transaccion => { toggle();
                     console.log(transaccion)
                    getMember(transaccion).then(
                        member => {updateMemberPoints(member, transaccion).then(() => swal("Bien!", "Se ha generado la transacción con éxito", "success").then(() => window.location.reload()) )})
             })
+        } else {
+            swal("Error", "Tipo Acumulo: Complete el monto \n Tipo Canje: Complete el producto", "error")
+        }
     } 
+
+    const checkFieldsRequireds = async () => {
+        if (!tipo) {
+            return false
+        } 
+        if (tipo == "Acumulo" && monto == "") {
+            return false
+        } 
+        if (tipo == "Canje" && id_producto == "") {
+            return false
+        }
+        return true
+    }
 
   const getMember = async (transaccion) => {
       console.log(transaccion)
@@ -124,7 +153,7 @@ const AddTransaction = () => {
         console.log(JSON.stringify(response))
     }
     
-    const { tipo, monto, id_miembro, descripcion } = transaction;
+    const { tipo, monto, id_miembro, id_producto, descripcion } = transaction;
       
     const onInputChange = e => {
         setTransaction({...transaction, [e.target.name]: e.target.value})
@@ -134,12 +163,12 @@ const AddTransaction = () => {
         <div>
             <Button className="btn btn-primary btn-add" color="btn btn-primary" onClick={toggle}>Crear Transacción</Button>
             <Modal isOpen={modal}>
+            <Form id="formAddTransaction" onSubmit={handleSubmit}>
                 <ModalHeader>Crear Transacción</ModalHeader>
                 <ModalBody>
-                    <Form id="formAddTransaction">
                         <FormGroup>
                             <Label for="txtType">Tipo</Label>
-                            <Input type="select" id="txtType" name="tipo" placeholder="Tipo de transacción" value={tipo} onChange={e => onInputChange(e)} >
+                            <Input type="select" id="txtType" name="tipo" placeholder="Tipo de transacción" value={tipo} onChange={e => onInputChange(e)} required>
                                 <option value="">Elige una opción</option>
                                 <option value="Acumulo">Acumulo</option>
                                 <option value="Canje">Canje</option>
@@ -150,22 +179,29 @@ const AddTransaction = () => {
                             <Input type="text" id="txtAmount" name="monto" placeholder="Monto de transacción" value={monto} onChange={e => onInputChange(e)} />
                         </FormGroup>
                         <FormGroup>
-                            <Label for="txtType">Miembro</Label>
+                            <Label for="txtMember">Miembro</Label>
                             <Input type="select" id="txtMember" name="id_miembro" placeholder="Miembro de transacción" value={id_miembro} onChange={e => onInputChange(e)} required >
                                 <option value="">Elige una opción</option>
                                 {members.map((member) => (<option value={member.id}>{member.nombre} {member.apellido}</option>))}
                             </Input>
                         </FormGroup>
                         <FormGroup>
+                            <Label for="txtProduct">Producto</Label>
+                            <Input type="select" id="txtProduct" name="id_producto" placeholder="Producto de transacción" value={id_producto} onChange={e => onInputChange(e)} >
+                                <option value="">Elige una opción</option>
+                                {products.map((product) => (<option value={product.id}>{product.nombre}</option>))}
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
                             <Label for="txtDescription">Descripción</Label>
                             <Input type="textbox" id="txtDescription" name="descripcion" placeholder="Descripción de transacción" value={descripcion} onChange={e => onInputChange(e)} />
                         </FormGroup>
-                    </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={onSubmit}>Aceptar</Button>
+                    <Button color="primary" type="submit">Aceptar</Button>
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
+                </Form>
             </Modal>
         </div>
     );

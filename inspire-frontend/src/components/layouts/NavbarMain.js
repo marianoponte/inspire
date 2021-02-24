@@ -1,19 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import LogOut from '../pages/LogOut';
-import jwt_decode from 'jwt-decode';
 
 const NavbarMain = () => {
-
-    const [admin, setAdmin] = useState(true)
-
-    /*
-    useEffect(() => {
-        var token = localStorage.getItem('token')
-        var member = jwt_decode(token)
-        var permiso = member.permiso
-        setAdmin(permiso=="Admin")
-        },[]) */
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary" id="navigation-bar">
@@ -26,9 +15,9 @@ const NavbarMain = () => {
                     <li className="nav-item">
                         <Link className="nav-link" exact to="/home">Home</Link>
                     </li>
-                    {admin && <li className="nav-item">
+                    <li className="nav-item" id="member-navbar">
                         <Link className="nav-link" exact to="/members">Miembros</Link>
-                    </li>}
+                    </li>
                     <li className="nav-item">
                         <Link className="nav-link" exact to="/vouchers">Vouchers</Link>
                     </li>

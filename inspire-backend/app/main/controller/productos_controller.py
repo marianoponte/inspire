@@ -45,6 +45,6 @@ def crear_producto():
 def eliminar_producto(id_producto):
 	try:
 		eliminar(id_producto)
-		return jsonify({'mensaje': 'Producto eliminado con exito!'}), CODIGO_HTTP["OK"]
+		return jsonify({'mensaje': 'Producto eliminado con exito!', 'code': CODIGO_HTTP["OK"]})
 	except Exception as e:
-		return jsonify({'mensaje': str(e)}), CODIGO_HTTP["NOT_FOUND"]
+		return jsonify({'mensaje': str(e), 'code': CODIGO_HTTP["NOT_FOUND"]})

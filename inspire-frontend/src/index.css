@@ -11,6 +11,12 @@ table {
   margin-bottom: 2%;
 }
 
+#btn-add-product {
+  float:right;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
 .btn-add {
   margin-right: 25px;
 }

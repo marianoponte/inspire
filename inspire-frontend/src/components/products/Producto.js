@@ -1,5 +1,6 @@
 import React from 'react';
 import Canje from '../canje/Canje';
+import DeleteProduct from './DeleteProduct';
 
 const Producto = (props) => {
 
@@ -15,6 +16,9 @@ const Producto = (props) => {
                     <Canje 
                         productId={id}
                         puntos={puntos} />
+                        <p></p>
+                    <DeleteProduct 
+                        productId={id}/>
                 </div>
             </div>
         </div>

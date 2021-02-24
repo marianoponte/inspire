@@ -1,11 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 
-const SearchMember = () => {
+const SearchMember = ({ onChangeSearch })  => {
+
+    const [ search, setSearch ] = useState('');
+
+    const thisinput = useRef(null)
+
+    useEffect(() => {
+        thisinput.current.focus();
+    })
+
     return (
-    <form className="form-inline my-2 my-lg-0 form-search">
-        <input className="form-control mr-sm-1" id="input-search-member" type="text" placeholder="Buscar" />
-        <button className="btn btn-secondary my-2 my-sm-0" id="btn-search-member" type="submit">Buscar</button>
-    </form>
+        <div className='search'>
+            <span>Búsqueda</span>
+            <input type="text" 
+                ref={thisinput}
+                value={search} 
+                onChange={e => { 
+                    const { value } = e.target;
+                    setSearch(value);
+                    onChangeSearch(value);
+                }} />
+        </div>
     );
 };
 

@@ -36,6 +36,11 @@ const Home = () => {
         if (localStorage.getItem('token')) {
             var token = localStorage.getItem('token')
             var member = jwt_decode(token);
+            if (member.permiso == "Admin") {
+                document.getElementById('member-navbar').style.display = "flex";
+            } else {
+                document.getElementById('member-navbar').style.display = "none";
+            }
             getMember(member.email)
                 .then(r => {
                     setInfo({
