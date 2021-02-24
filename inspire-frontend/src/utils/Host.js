@@ -1,3 +1,3 @@
-const HOST = '127.0.0.1'
+const HOST = '134.209.114.27'
 
 export default HOST;
