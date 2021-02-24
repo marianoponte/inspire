@@ -151,7 +151,7 @@ const AddTransaction = () => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="txtType">Miembro</Label>
-                            <Input type="select" id="txtMember" name="id_miembro" placeholder="Miembro de transacción" value={id_miembro} onChange={e => onInputChange(e)} >
+                            <Input type="select" id="txtMember" name="id_miembro" placeholder="Miembro de transacción" value={id_miembro} onChange={e => onInputChange(e)} required >
                                 <option value="">Elige una opción</option>
                                 {members.map((member) => (<option value={member.id}>{member.nombre} {member.apellido}</option>))}
                             </Input>

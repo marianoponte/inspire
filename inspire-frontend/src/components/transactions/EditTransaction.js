@@ -10,7 +10,9 @@ const EditTransaction = () => {
 
     const [transaction, setTransaction] = useState({});
 
-    const [id_miembro, setId_miembro] = useState();
+    const [miembro, setMiembro] = useState({});
+
+    const [producto, setProducto] = useState({});
 
     const [loading, setLoading] = useState(true);
 
@@ -29,9 +31,13 @@ const EditTransaction = () => {
 
         setTransaction(response.transaccion);
         if (response.transaccion.miembro)
-            setId_miembro(response.transaccion.miembro.id)
+            setMiembro(response.transaccion.miembro)
         else 
-            setId_miembro(null)
+            setMiembro(null)
+        if (response.transaccion.producto)
+            setProducto(response.transaccion.producto)
+        else 
+            setProducto(null)
         setLoading(false)
     }
 
@@ -51,8 +57,12 @@ const EditTransaction = () => {
                         <Input type="text" id="txtType" name="tipo" placeholder="Tipo de transacción" value={tipo} readOnly />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="txtMember">Miembro</Label>
-                        <Input type="textbox" id="txtMember" name="id_miembro" placeholder="Miembro de transacción" value={id_miembro} readOnly />
+                        <Label for="txtIdMember">Id Miembro</Label>
+                        <Input type="integer" id="txtIdMember" name={miembro.id} placeholder="Miembro de transacción" value={miembro ? miembro.id : null} readOnly />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="txtIdProduct">Id Producto</Label>
+                        <Input type="integer" id="txtIdProduct" name={miembro.id} placeholder="Producto de transacción" value={producto ? producto.id : null} readOnly />
                     </FormGroup>
                     <FormGroup>
                         <Label for="txtAmount">Monto</Label>
