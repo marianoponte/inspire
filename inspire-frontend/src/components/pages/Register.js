@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input} from 'reactstrap';
 import CODIGO_HTTP from '../../utils/Utils'
 import swal from 'sweetalert';
+import HOST from '../../utils/Host';
 
 const Register = () => {
 
@@ -64,7 +65,7 @@ const Register = () => {
       const doRegister = async (event) => {
         event.preventDefault();
         console.log("REGISTER")
-        let response = await fetch('http://localhost:5000/register', {
+        let response = await fetch(`http://${HOST}:5000/register`, {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'

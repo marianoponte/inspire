@@ -5,6 +5,7 @@ import AddMember from './AddMember';
 import swal from 'sweetalert';
 import jwt_decode from 'jwt-decode';
 import CODIGO_HTTP from '../../utils/Utils'
+import HOST from '../../utils/Host';
 
 const MembersTable = () => {
 
@@ -33,7 +34,7 @@ const MembersTable = () => {
     }, []);
 
     const getMembers = async () => {
-        let response = await fetch('http://localhost:5000/members', {
+        let response = await fetch(`http://${HOST}:5000/members`, {
             method: "GET"
         });
 
@@ -54,7 +55,7 @@ const MembersTable = () => {
         })
             .then(async (willDelete) => {
                 if (willDelete) {
-                    let response = await fetch(`http://localhost:5000/members/${memberId}`, {
+                    let response = await fetch(`http://${HOST}:5000/members/${memberId}`, {
                         method: "DELETE"
                     })
                     response = await response.json()

@@ -3,6 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, La
 import { useHistory } from "react-router-dom";
 import CODIGO_HTTP from '../../utils/Utils';
 import swal from 'sweetalert';
+import HOST from '../../utils/Host';
 
 const AddTransaction = () => {
 
@@ -42,7 +43,7 @@ const AddTransaction = () => {
     })}
 
     const getMembers = async () => {
-        let response = await fetch('http://localhost:5000/members', {
+        let response = await fetch(`http://${HOST}:5000/members`, {
             method: "GET"
         });
 
@@ -52,7 +53,7 @@ const AddTransaction = () => {
     }
 
     const getProducts = async () => {
-        let response = await fetch('http://localhost:5000/products', {
+        let response = await fetch(`http://${HOST}:5000/products`, {
             method: "GET"
         });
         response = await response.json();
@@ -97,7 +98,7 @@ const AddTransaction = () => {
       console.log(transaccion)
       var id_miembro = transaccion.miembro.id
     console.log(id_miembro)
-    let response = await fetch(`http://localhost:5000/members/${id_miembro}`, {
+    let response = await fetch(`http://${HOST}:5000/members/${id_miembro}`, {
         method: "GET",
         headers: {
           'Content-Type': 'application/json'
@@ -112,7 +113,7 @@ const AddTransaction = () => {
 }
 
     const generateTransaction = async () => {
-        let response = await fetch('http://localhost:5000/transactions', {
+        let response = await fetch(`http://${HOST}:5000/transactions`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -142,7 +143,7 @@ const AddTransaction = () => {
             puntos: member.puntos + transaction.puntos
         }
         console.log(payload)
-        let response = await fetch(`http://localhost:5000/members/${member.id}`, {
+        let response = await fetch(`http://${HOST}:5000/members/${member.id}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'

@@ -2,13 +2,14 @@ import React from 'react';
 import swal from 'sweetalert';
 import CODIGO_HTTP from '../../utils/Utils'
 import { Button } from 'reactstrap';
+import HOST from '../../utils/Host';
 
 const DeleteProduct = (props) => {
     
     const { productId } = props
 
     const deleteProduct = async () => {
-        let response = await fetch(`http://localhost:5000/products/${productId}`, {
+        let response = await fetch(`http://${HOST}:5000/products/${productId}`, {
             method: "DELETE",
         });
         response = await response.json();

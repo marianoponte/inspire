@@ -4,6 +4,7 @@ import CODIGO_HTTP from '../../utils/Utils'
 import { useHistory } from "react-router-dom";
 import swal from 'sweetalert';
 import Register from './Register';
+import HOST from '../../utils/Host';
 
 const Login = () => {
 
@@ -35,7 +36,7 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        let response = await fetch('http://localhost:5000/login', {
+        let response = await fetch(`http://${HOST}:5000/login`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TransactionsTable from '../transactions/TransactionsTable';
+import HOST from '../../utils/Host';
 
 const MemberTransactions = (props) => {
 
@@ -12,7 +13,7 @@ const MemberTransactions = (props) => {
     },[]);
 
     const loadTransactions = async (id) => {
-        let response = await fetch(`http://localhost:5000/transactions?id_miembro=${id}`, {
+        let response = await fetch(`http://${HOST}:5000/transactions?id_miembro=${id}`, {
             method: "GET"
           });
           response = await response.json();

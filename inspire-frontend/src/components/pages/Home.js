@@ -4,6 +4,7 @@ import jwt_decode from 'jwt-decode';
 import CODIGO_HTTP from '../../utils/Utils'
 import swal from 'sweetalert';
 import {Spinner} from 'reactstrap';
+import HOST from '../../utils/Host';
 
 const Home = () => {
 
@@ -18,7 +19,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true)
 
     const getMember = async (email) => {
-        let response = await fetch(`http://localhost:5000/members?email=${email}`, {
+        let response = await fetch(`http://${HOST}:5000/members?email=${email}`, {
             method: "GET"
         });
         response = await response.json();

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import swal from 'sweetalert';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import CODIGO_HTTP from '../../utils/Utils';
+import HOST from '../../utils/Host';
 
 const AddProduct = () => {
 
@@ -20,7 +21,7 @@ const AddProduct = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        let response = await fetch('http://localhost:5000/products', {
+        let response = await fetch(`http://${HOST}:5000/products`, {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'

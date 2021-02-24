@@ -8,6 +8,7 @@ import CODIGO_HTTP from '../../utils/Utils'
 import MemberTrades from './MemberTrades';
 import MemberVouchers from './MemberVouchers';
 import jwt_decode from 'jwt-decode';
+import HOST from '../../utils/Host';
 
 const EditMember = () => {
 
@@ -42,7 +43,7 @@ const EditMember = () => {
     }, []);
 
     const loadMember = async () => {
-        let response = await fetch(`http://localhost:5000/members/${memberId}`, {
+        let response = await fetch(`http://${HOST}:5000/members/${memberId}`, {
             method: "GET",
         });
         response = await response.json();
@@ -64,7 +65,7 @@ const EditMember = () => {
 
     const onSave = async () => {
             console.log(JSON.stringify(member))
-            let response = await fetch(`http://localhost:5000/members/${member.id}`, {
+            let response = await fetch(`http://${HOST}:5000/members/${member.id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'

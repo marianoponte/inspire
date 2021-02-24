@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Spinner } from 'reactstrap';
 import VouchersTable from './VouchersTable';
 import jwt_decode from 'jwt-decode';
+import HOST from '../../utils/Host';
 
 const VouchersTab = () => {
 
@@ -31,7 +32,7 @@ const VouchersTab = () => {
     }, []);
 
     const getVouchersAdmin = async () => {
-        let response = await fetch('http://localhost:5000/vouchers', {
+        let response = await fetch(`http://${HOST}:5000/vouchers`, {
             method: "GET"
         });
         response = await response.json();
@@ -41,7 +42,7 @@ const VouchersTab = () => {
     }
 
     const getVouchersUser = async (id_member) => {
-        let response = await fetch(`http://localhost:5000/vouchers?id_miembro=${id_member}`, {
+        let response = await fetch(`http://${HOST}:5000/vouchers?id_miembro=${id_member}`, {
             method: "GET"
         });
         response = await response.json();

@@ -3,6 +3,7 @@ import { Button } from 'reactstrap';
 import swal from 'sweetalert';
 import jwt_decode from 'jwt-decode';
 import CODIGO_HTTP from '../../utils/Utils'
+import HOST from '../../utils/Host';
 
 const Canje = (props) => {
 
@@ -29,7 +30,7 @@ const Canje = (props) => {
 
     const getMember = async (email) => {
         console.log(email)
-        let response = await fetch(`http://localhost:5000/members?email=${email}`, {
+        let response = await fetch(`http://${HOST}:5000/members?email=${email}`, {
             method: "GET"
           });
             response = await response.json();
@@ -63,7 +64,7 @@ const Canje = (props) => {
         }
         
         console.log(payload)
-        let response = await fetch('http://localhost:5000/transactions', {
+        let response = await fetch(`http://${HOST}:5000/transactions`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -87,7 +88,7 @@ const Canje = (props) => {
             puntos: puntosParaActualizar
         }
         console.log(payload)
-        let response = await fetch(`http://localhost:5000/members/${member.id}`, {
+        let response = await fetch(`http://${HOST}:5000/members/${member.id}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'
@@ -106,7 +107,7 @@ const Canje = (props) => {
         console.log("Member de voucher", member)
         console.log("Payload de Crear Voucher: ", payload)
 
-        let response = await fetch('http://localhost:5000/vouchers', {
+        let response = await fetch(`http://${HOST}:5000/vouchers`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

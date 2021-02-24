@@ -4,6 +4,7 @@ import { Spinner } from 'reactstrap';
 import AddProduct from './AddProduct';
 import Producto from './Producto';
 import jwt_decode from 'jwt-decode';
+import HOST from '../../utils/Host';
 
 const ProductsTable = () => {
 
@@ -33,7 +34,7 @@ const ProductsTable = () => {
     }, []);
 
     const getProducts = async () => {
-        let response = await fetch('http://localhost:5000/products', {
+        let response = await fetch(`http://${HOST}:5000/products`, {
             method: "GET"
         });
 

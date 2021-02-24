@@ -3,6 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, La
 import {useHistory} from "react-router-dom";
 import swal from 'sweetalert';
 import CODIGO_HTTP from '../../utils/Utils';
+import HOST from '../../utils/Host';
 
 const AddMember = () => {
 
@@ -39,7 +40,7 @@ const AddMember = () => {
   }
 
   const onSubmit = async () => {
-    let response = await fetch('http://localhost:5000/members', {
+    let response = await fetch(`http://${HOST}:5000/members`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
@@ -66,7 +67,7 @@ const AddMember = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let response = await fetch('http://localhost:5000/members', {
+    let response = await fetch(`http://${HOST}:5000/members`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import AddTransaction from './AddTransaction';
-import SearchTransaction from './SearchTransaction';
 import TransactionsTable from './TransactionsTable';
 import jwt_decode from 'jwt-decode';
 import { Spinner } from 'reactstrap';
+import HOST from '../../utils/Host'
 
 const TransactionsTab = () => {
 
@@ -36,7 +36,7 @@ const TransactionsTab = () => {
     }, []);
 
     const getTransactionsAdmin = async () => {
-        let response = await fetch('http://localhost:5000/transactions', {
+        let response = await fetch(`http://${HOST}:5000/transactions`, {
             method: "GET"
         });
         response = await response.json();
@@ -46,9 +46,10 @@ const TransactionsTab = () => {
     }
 
     const getTransactionsUser= async (id_member) => {
-        let response = await fetch(`http://localhost:5000/transactions?id_miembro=${id_member}`, {
+        let response = await fetch(`http://${HOST}:5000/transactions?id_miembro=${id_member}`, {
             method: "GET"
         });
+
         response = await response.json();
         setTransactions(response.transacciones);
         setTransactionsOriginal(response.transacciones);

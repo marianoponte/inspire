@@ -3,6 +3,7 @@ import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import CODIGO_HTTP from '../../utils/Utils'
+import HOST from '../../utils/Host';
 
 const EditVoucher = () => {
 
@@ -33,7 +34,7 @@ const EditVoucher = () => {
     }, []);
 
     const loadVoucherAdmin = async () => {
-        let response = await fetch(`http://localhost:5000/vouchers/${voucherId}`, {
+        let response = await fetch(`http://${HOST}:5000/vouchers/${voucherId}`, {
             method: "GET",
         });
         response = await response.json();
@@ -57,7 +58,7 @@ const EditVoucher = () => {
     }
 
     const loadVoucherUser = async (id_miembro) => {
-        let response = await fetch(`http://localhost:5000/vouchers/${voucherId}`, {
+        let response = await fetch(`http://${HOST}:5000/vouchers/${voucherId}`, {
             method: "GET",
         });
         response = await response.json();

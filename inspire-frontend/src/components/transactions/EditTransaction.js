@@ -3,6 +3,7 @@ import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import CODIGO_HTTP from '../../utils/Utils'
+import HOST from '../../utils/Host';
 
 const EditTransaction = () => {
 
@@ -34,7 +35,7 @@ const EditTransaction = () => {
     }, []);
 
     const loadTransactionAdmin = async () => {
-        let response = await fetch(`http://localhost:5000/transactions/${txtId}`, {
+        let response = await fetch(`http://${HOST}:5000/transactions/${txtId}`, {
             method: "GET",
         });
         response = await response.json();
@@ -56,7 +57,7 @@ const EditTransaction = () => {
     }
 
     const loadTransactionUser = async (id_miembro) => {
-        let response = await fetch(`http://localhost:5000/transactions/${txtId}`, {
+        let response = await fetch(`http://${HOST}:5000/transactions/${txtId}`, {
             method: "GET",
         });
         response = await response.json();
