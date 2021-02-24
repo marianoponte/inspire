@@ -58,8 +58,10 @@ const Canje = (props) => {
             puntos,
             tipo: "Canje",
             descripcion: "Transacción generada automaticamente por canje de producto",
-            monto: 0
+            monto: 0,
+            id_producto: productId
         }
+        
         console.log(payload)
         let response = await fetch('http://localhost:5000/transactions', {
         method: "POST",

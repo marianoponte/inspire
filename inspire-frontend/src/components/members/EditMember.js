@@ -19,6 +19,8 @@ const EditMember = () => {
 
     const [loading, setLoading] = useState(true)
 
+    const [emailOriginalMember, setEmailOriginalMember] = useState("")
+
     const cleanForm = () => {
         setMember({})
     }
@@ -28,15 +30,13 @@ const EditMember = () => {
     }, []);
 
     const loadMember = async () => {
-        console.log("get del member")
         let response = await fetch(`http://localhost:5000/members/${memberId}`, {
             method: "GET",
         });
-
         response = await response.json();
-        console.log("Response del get member")
-        console.log(response)
+        console.log("Response del Get Member: ", response.miembro)
         setMember(response.miembro);
+        setEmailOriginalMember(response.miembro.email)
         setLoading(false)
     }
 
@@ -51,42 +51,52 @@ const EditMember = () => {
     }
 
     const onSave = async () => {
-        checkEmail()
-        console.log(JSON.stringify(member))
-        let response = await fetch(`http://localhost:5000/members/${member.id}`, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(member)
-        })
+        const isNotEmailDuplicate = await checkEmail()
+            console.log(JSON.stringify(member))
+            let response = await fetch(`http://localhost:5000/members/${member.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(member)
+            })
 
-        response = await response.json();
-        console.log(response)
+            console.log(JSON.stringify(member))
+            response = await response.json();
+            console.log(response)
 
-        if (response.code == CODIGO_HTTP.OK) {
-            swal("Bien!", "Cambios guardados correctamente", "success")
-        } else {
-            swal("Error", "No se pudieron guardar los cambios", "error")
+            if (response.code == CODIGO_HTTP.OK) {
+                swal("Bien!", "Cambios guardados correctamente", "success")
+                var token = localStorage.getItem('token')
+                var memberToken = jwt_decode(token);
+                if (memberId === memberToken.id) {
+                    localStorage.setItem('token', response.token)
+                }
+            } else {
+                swal("Error", "No se pudieron guardar los cambios", "error")
+            }
         }
-    }
 
     const checkEmail = async () => {
         if (localStorage.getItem('token')) {
             var token = localStorage.getItem('token')
             var memberToken = jwt_decode(token);
             console.log("Member token email:", memberToken.email)
+            console.log("Member token id:", memberToken.id)
             console.log(member.email)
-            if  (!(memberToken.email === member.email)) { 
-                console.log("son distintos..")
-                let response = fetch(`http://localhost:5000/members?email=${memberToken.email}`, {
+            if (memberToken.id == memberId && memberToken.email == member.email) {
+                return true
+            }
+                let response = await fetch(`http://localhost:5000/members?email=${member.email}`, {
                     method: "GET"
-                  });
-                  response = await response.json();
-                  if (response.code == CODIGO_HTTP.OK) {
+                });
+                response = await response.json();
+                console.log(response)
+                if (response.miembros.length > 0) {
+                    if (response.miembros.id == memberId) {
                     return false
-                } else return true
-            } return true
+                    }
+                } return true
         }
     }
 
@@ -121,7 +131,7 @@ const EditMember = () => {
                         >
                             Canjes
               </NavLink>
-              <NavLink
+                        <NavLink
                             className={classnames({ active: activeTab === '4' })}
                             onClick={() => {
                                 toggleTab('4');
@@ -134,47 +144,47 @@ const EditMember = () => {
             </Col>
             <Col xs="6" sm="6" md="6">
                 <TabContent activeTab={activeTab}>
-                    { (!loading) ?
-                    <TabPane tabId="1">
-                        <Form id="formEditMember">
-                            <FormGroup>
-                                <Label for="memberName">Nombre</Label>
-                                <Input type="text" id="memberName" name="nombre" placeholder="Nombre de cliente" value={nombre} onChange={e => onInputChange(e)} />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="memberLastName">Appellido</Label>
-                                <Input type="text" id="memberLastName" name="apellido" placeholder="Apellido de cliente" value={apellido} onChange={e => onInputChange(e)} />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="memberEmail">Email</Label>
-                                <Input type="text" id="memberEmail" name="email" placeholder="Email de cliente" value={email} onChange={e => onInputChange(e)} />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="memberPoints">Puntos</Label>
-                                <Input type="number" id="memberPoints" name="puntos" placeholder="Puntos del cliente" value={puntos} readOnly />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="memberBirthDate">Fecha de nacimiento</Label>
-                                <Input type="date" id="memberBirthDate" name="fecha_de_nacimiento" placeholder="Fecha de nacimiento de cliente" value={fecha_de_nacimiento} onChange={e => onInputChange(e)} />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="memberRegistrationDate">Fecha de registro</Label>
-                                <Input type="date" id="memberRegistrationDate" name="fecha_de_registro" placeholder="Fecha de registro de cliente" value={fecha_de_registro} readOnly />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="memberState">Estado</Label>
-                                <Input type="select" id="memberState" name="estado" placeholder="Estado de cliente" value={estado} onChange={e => onInputChange(e)}>
-                                    <option>Activo</option>
-                                    <option>Inactivo</option>
-                                </Input>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="memberComment">Comentario</Label>
-                                <Input type="text" id="memberComment" name="comentario" placeholder="Comentario de cliente" value={comentario} onChange={e => onInputChange(e)} />
-                            </FormGroup>
-                        </Form>
-                        <Button color="primary" onClick={onSave}>Guardar</Button>
-                    </TabPane> : <div className="spinner-center"><Spinner color="primary" /></div> }
+                    {(!loading) ?
+                        <TabPane tabId="1">
+                            <Form id="formEditMember">
+                                <FormGroup>
+                                    <Label for="memberName">Nombre</Label>
+                                    <Input type="text" id="memberName" name="nombre" placeholder="Nombre de cliente" value={nombre} onChange={e => onInputChange(e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="memberLastName">Appellido</Label>
+                                    <Input type="text" id="memberLastName" name="apellido" placeholder="Apellido de cliente" value={apellido} onChange={e => onInputChange(e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="memberEmail">Email</Label>
+                                    <Input type="text" id="memberEmail" name="email" placeholder="Email de cliente" value={email} onChange={e => onInputChange(e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="memberPoints">Puntos</Label>
+                                    <Input type="number" id="memberPoints" name="puntos" placeholder="Puntos del cliente" value={puntos} readOnly />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="memberBirthDate">Fecha de nacimiento</Label>
+                                    <Input type="date" id="memberBirthDate" name="fecha_de_nacimiento" placeholder="Fecha de nacimiento de cliente" value={fecha_de_nacimiento} onChange={e => onInputChange(e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="memberRegistrationDate">Fecha de registro</Label>
+                                    <Input type="date" id="memberRegistrationDate" name="fecha_de_registro" placeholder="Fecha de registro de cliente" value={fecha_de_registro} readOnly />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="memberState">Estado</Label>
+                                    <Input type="select" id="memberState" name="estado" placeholder="Estado de cliente" value={estado} onChange={e => onInputChange(e)}>
+                                        <option>Activo</option>
+                                        <option>Inactivo</option>
+                                    </Input>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="memberComment">Comentario</Label>
+                                    <Input type="text" id="memberComment" name="comentario" placeholder="Comentario de cliente" value={comentario} onChange={e => onInputChange(e)} />
+                                </FormGroup>
+                            </Form>
+                            <Button color="primary" onClick={onSave}>Guardar</Button>
+                        </TabPane> : <div className="spinner-center"><Spinner color="primary" /></div>}
                     <TabPane tabId="2">
                         <MemberTransactions id={memberId} />
                     </TabPane>

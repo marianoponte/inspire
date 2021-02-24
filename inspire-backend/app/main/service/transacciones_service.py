@@ -38,10 +38,10 @@ def crear(transaccion):
 	else: 
 		monto = transaccion['monto']
 
-	if not transaccion['producto']:
+	if not transaccion['id_producto']:
 		producto = None
 	else:
-		producto = transaccion['producto']
+		producto = transaccion['id_producto']
 
 	if not transaccion['puntos']:
 		if transaccion['monto']:

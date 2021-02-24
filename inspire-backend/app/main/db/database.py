@@ -40,7 +40,7 @@ def editar_instancia(model, id, **kwargs):
         if ((type(new_value) == bool) or new_value is None):
             setattr(instance, attr, new_value)
         else:
-            if new_value:
+            if new_value or type(new_value) == int:
                 setattr(instance, attr, new_value)
     agregar_y_commitear(instance)
 

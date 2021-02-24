@@ -25,6 +25,7 @@ def autenticar():
     if miembro and Bcrypt().check_password_hash(miembro.password, password.encode('utf-8')):
         print(miembro)
         payload = {
+			'id': miembro.id,
 			'nombre': miembro.nombre,
             'apellido': miembro.apellido,
             'permiso': miembro.permiso,
@@ -38,7 +39,7 @@ def autenticar():
             algorithm='HS256')
         
         # Genero token.
-        token = jwt_token.decode("utf-8")        
+        token = jwt_token.decode("utf-8")     
 
         if token:
             return jsonify({'token': token, 'code': CODIGO_HTTP["OK"]})
@@ -73,7 +74,7 @@ def obtener_miembros():
 		miembros = obtener_miembros_service(query_params)
 		return jsonify({'miembros': miembros, 'code': CODIGO_HTTP["OK"]})
 	except:
-		return jsonify({'mensaje': 'Miembro no encontrado 1'}), CODIGO_HTTP["BAD_REQUEST"]
+		return jsonify({'mensaje': 'Miembro no encontrado'}), CODIGO_HTTP["BAD_REQUEST"]
 
 @miembros.route('/members/<int:id>', methods=['GET'])
 def obtener_miembro(id):
@@ -92,14 +93,34 @@ def crear_miembro():
 	except Exception as e:
 		return jsonify({'mensaje': str(e), 'code': CODIGO_HTTP["BAD_REQUEST"]})
 
+
 @miembros.route('/members/<int:id>', methods=['PUT'])
 def editar_miembro(id):
 	try:
 		data = request.get_json()
+		print(data)
 		editar(id, data)
-		return jsonify({'code': CODIGO_HTTP["OK"]})
-	except:
-		return jsonify({'mensaje': 'Parametros invalidos'}), CODIGO_HTTP["BAD_REQUEST"]
+		payload = {
+			'id': id,
+			'nombre': data['nombre'],
+            'apellido': data['apellido'],
+            'permiso': data['permiso'],
+            'email': data['email']
+        }
+
+        # Creacion del token usando el payload
+		jwt_token = jwt.encode(
+            payload,
+            SECRET_KEY,
+            algorithm='HS256')
+        
+        # Genero token.
+		token = jwt_token.decode("utf-8")
+		if token:
+			return jsonify({'token': token, 'code': CODIGO_HTTP["OK"]})
+	except Exception as e:
+		return jsonify({'mensaje': str(e), 'code': CODIGO_HTTP["BAD_REQUEST"]})
+
 
 @miembros.route('/members/<int:id_miembro>', methods=['DELETE'])
 def eliminar_miembro(id_miembro):

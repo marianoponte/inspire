@@ -25,7 +25,8 @@ const AddTransaction = () => {
         monto: "",
         id_miembro: "",
         descripcion: "",
-        puntos: ""
+        puntos: "",
+        id_producto: ""
     });
   
     const cleanForm = () => { setTransaction({      
@@ -33,7 +34,8 @@ const AddTransaction = () => {
         monto: "",
         id_miembro: "",
         descripcion: "",
-        puntos: ""
+        puntos: "",
+        id_producto: ""
     })}
 
     const getMembers = async () => {
@@ -62,9 +64,9 @@ const AddTransaction = () => {
             })
     } 
 
-  const getMember = async (r) => {
-      console.log(r)
-      var id_miembro = r.miembro.id
+  const getMember = async (transaccion) => {
+      console.log(transaccion)
+      var id_miembro = transaccion.miembro.id
     console.log(id_miembro)
     let response = await fetch(`http://localhost:5000/members/${id_miembro}`, {
         method: "GET",

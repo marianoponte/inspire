@@ -30,7 +30,7 @@ parse==1.15.0
 parse-type==0.5.2
 public==2019.4.13
 pycparser==2.20
-PyJWT==2.0.1
+PyJWT==1.7.0
 pylint==2.6.0
 python-dateutil==2.8.1
 python-decouple==3.3
